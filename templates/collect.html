@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка постов ВК</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Добавить группу ВК</h1>
+
+    <form method="post" action="/collect">
+        <label>ID группы (без https://vk.com)</label>
+        <input
+            type="text"
+            name="group_id"
+            placeholder="Например: otryad_example или 12345678"
+            required
+        >
+
+        <button type="submit">Загрузить посты</button>
+    </form>
+
+    {% if message %}
+    <div class="result">
+        <h3>{{ message }}</h3>
+    </div>
+    {% endif %}
+
+    <a href="/">← Назад к генератору</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор постов ВК</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Генератор постов для отряда</h1>
+
+    <form method="post" action="/generate">
+        <label>Тема / мероприятие</label>
+        <input type="text" name="topic" required value="{{ topic or '' }}">
+
+        <label>Тональность</label>
+        <select name="tone">
+            <option>тёплый</option>
+            <option>душевный</option>
+            <option>торжественный</option>
+            <option>юмористический</option>
+        </select>
+
+        <label>Объём</label>
+        <select name="length">
+            <option>короткий</option>
+            <option selected>средний</option>
+            <option>длинный</option>
+        </select>
+
+        <button type="submit">Сгенерировать</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <h2>Результат</h2>
+        <textarea rows="20">{{ result }}</textarea>
+    </div>
+    {% endif %}
+</div>
+<a href="/collect">Добавить группу ВК</a>
+</body>
+</html>
