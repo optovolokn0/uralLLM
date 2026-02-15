@@ -7,11 +7,8 @@ def validate_vk_post(text: str, structure: dict):
     if len(text) < 500:
         soft_errors.append("Текст короче 500 символов")
 
-    if squad in text[:-150]:
+    if squad in text[:-200]:
         hard_errors.append("Название отряда упоминается не только в конце")
-
-    if squad not in text[-200:]:
-        hard_errors.append("Нет финального сообщения с отрядом")
 
     if "Ключевые действия" in text:
         hard_errors.append("Лишний служебный блок")

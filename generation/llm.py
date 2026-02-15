@@ -1,33 +1,33 @@
-import subprocess
-from config import OLLAMA_MODEL
+from huggingface_hub import InferenceClient
+from config import HUGGINGFACE_API_KEY, HUGGINGFACE_MODEL
 
-def generate_text(prompt: str, temperature=0.7) -> str:
+def generate_text(prompt: str, temperature=0.8) -> str:
     print(f"[DEBUG] generate_text called with temperature={temperature}")
     print(f"[DEBUG] Prompt preview: {prompt[:100]}...")
-    print(f"[DEBUG] Calling: ollama run {OLLAMA_MODEL}")
+    print(f"[DEBUG] Calling Hugging Face API with model: {HUGGINGFACE_MODEL}")
+    
+    if not HUGGINGFACE_API_KEY:
+        raise RuntimeError("HUGGINGFACE_API_KEY not found in environment variables. Please set it in your .env file.")
     
     try:
-        process = subprocess.run(
-            ["ollama", "run", OLLAMA_MODEL],
-            input=prompt,
-            text=True,
-            encoding="utf-8",
-            capture_output=True,
-            timeout=300  # 5 minute timeout
+        client = InferenceClient(api_key=HUGGINGFACE_API_KEY)
+        
+        # Use chat completion API instead of text_generation
+        messages = [
+            {"role": "user", "content": prompt}
+        ]
+        
+        response = client.chat_completion(
+            model=HUGGINGFACE_MODEL,
+            messages=messages,
+            max_tokens=512,
+            temperature=temperature,
+            top_p=0.95,
         )
         
-        print(f"[DEBUG] Ollama process returncode: {process.returncode}")
-
-        if process.returncode != 0:
-            print(f"[DEBUG] Error from Ollama: {process.stderr}")
-            raise RuntimeError(f"Ollama error: {process.stderr}")
-
-        result = process.stdout.strip()
-        print(f"[DEBUG] Ollama returned {len(result)} characters")
+        result = response.choices[0].message.content
+        print(f"[DEBUG] Hugging Face returned {len(result)} characters")
         return result
-    except subprocess.TimeoutExpired:
-        print("[DEBUG] ERROR: Ollama process timed out after 300 seconds")
-        raise RuntimeError("Ollama generation timed out")
-    except FileNotFoundError:
-        print("[DEBUG] ERROR: Ollama executable not found. Make sure Ollama is installed and in PATH")
-        raise RuntimeError("Ollama not found in PATH")
+    except Exception as e:
+        print(f"[DEBUG] ERROR: Hugging Face API failed: {e}")
+        raise RuntimeError(f"Hugging Face generation failed: {e}")

@@ -26,7 +26,6 @@ def generate(
 ):
     result = generate_vk_post(
         topic=topic,
-        tone=tone,
         length=length
     )
 

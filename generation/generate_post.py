@@ -14,7 +14,6 @@ MAX_RETRIES = 3
 
 def generate_vk_post(
     topic: str,
-    tone: str = "тёплый",
     length: str = "5–8 предложений",
     top_k: int = 5
 ):
