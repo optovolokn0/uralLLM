@@ -28,12 +28,16 @@ def build_structure_prompt(topic: str) -> str:
 
 def build_generation_prompt(
     structure: dict,
-    examples: list[str],
+    examples: list[dict],
     length: str,
     force_rules: bool = False
 ) -> str:
     examples_block = "\n\n".join(
-        f"Пример {i+1}:\n{txt}" for i, txt in enumerate(examples)
+        (
+            f"Пример {i+1} (релевантность: {item['score']:.3f}):\n"
+            f"{item['text']}"
+        )
+        for i, item in enumerate(examples)
     )
 
     rules_block = """
@@ -70,6 +74,8 @@ def build_generation_prompt(
 - добавлять лишние элементы
 """.strip()
 
+    strict_section = f"\n{strict_block}" if force_rules else ""
+
     prompt = f"""
 Ты — пресс-секретарь паблика ВКонтакте.
 
@@ -80,10 +86,12 @@ def build_generation_prompt(
 
 {rules_block}
 
-{"\n" + strict_block if force_rules else ""}
+{strict_section}
 
-Примеры:
+Контекст из архива постов (RAG):
 {examples_block}
+
+Сначала незаметно опирайся на контекст, но не копируй фразы дословно.
 
 Напиши итоговый текст поста.
 """.strip()
@@ -115,5 +123,4 @@ def build_fix_prompt(original_text, errors, structure):
 
 Верни исправленный текст.
 """.strip()
-
 
