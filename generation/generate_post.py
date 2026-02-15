@@ -38,8 +38,11 @@ def generate_vk_post(
             raise RuntimeError(f"Missing field in structure: {field}")
 
     print("[STEP 2] Searching similar posts...")
-    examples_data = search_similar(text_query=topic, top_k=top_k)
-    examples = [item["text"] for item in examples_data]
+    examples = search_similar(text_query=topic, top_k=top_k)
+
+    if not examples:
+        print("[WARN] RAG context not found, generating without archive examples")
+        examples = [{"score": 0.0, "text": "Контекст не найден. Пиши по теме запроса без ссылок на конкретные прошлые посты."}]
 
     print("[STEP 3] Generating post...")
     generation_prompt = build_generation_prompt(
