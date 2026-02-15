@@ -10,4 +10,4 @@ DB_URL = "sqlite:///vk_posts.db"
 
 # Hugging Face Inference API
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
-HUGGINGFACE_MODEL = "meta-llama/Llama-2-13b-chat-hf"  # Free, non-gated model
+HUGGINGFACE_MODEL = "zai-org/GLM-5"  # Free, non-gated model
